@@ -1,79 +1,75 @@
 #include "sort.h"
 
 /**
- * partition - partitions array between low and high index
- * @arr: input array
- * @low: index of start of array
- * @high: index of end of array
- * @size: length of array
- * Return: starting index plus one
+ * swap - swap two values in array
+ * @a: first value
+ * @b: second value
  */
-int partition(int *arr, int low, int high, size_t size)
+void swap(int *a, int *b)
 {
-	int pivot = arr[high], i = low - 1, j;
+	int temp;
 
-	for (j = low; j < high; j++)
+	temp = *a;
+	*a = *b;
+	*b = temp;
+}
+/**
+ * partition - creates partition for quicksort
+ * @array: array to sort
+ * @low: low index
+ * @high: high index
+ * @size: size of array
+ * Return: partition index
+ */
+int partition(int array[], int low, int high, size_t size)
+{
+	int i, j, check = 0;
+
+	i = low - 1;
+
+	for (j = low; j <= high - 1; j++)
 	{
-		if (arr[j] <= pivot)
+		if (array[j] < array[high])
 		{
+			check = 1;
 			i++;
-			if (i != j)
-			{
-				swap(&arr[i], &arr[j]);
-				print_array(arr, size);
-			}
+			swap(&array[j], &array[i]);
 		}
 	}
-	if ((i + 1) != high)
-	{
-		swap(&arr[i + 1], &arr[high]);
-		print_array(arr, size);
-	}
+	if (check == 1)
+		print_array(array, size);
+	swap(&array[i + 1], &array[high]);
+
+	if (check == 0)
+		print_array(array, size);
+
 	return (i + 1);
 }
-
 /**
- * qs - quick sort with extra parameter size
- * @arr: input array
- * @low: index of start of array
- * @high: index of end of array
- * @size: length of array
+ * quicksort - start quicksort algorithm
+ * @array: array to sort
+ * @low: low index
+ * @high: high index
+ * @size: size of array
  */
-void qs(int arr[], int low, int high, size_t size)
+void quicksort(int *array, int low, int high, size_t size)
 {
 	int p;
 
 	if (low < high)
 	{
-		p = partition(arr, low, high, size);
-
-		qs(arr, low, p - 1, size);
-		qs(arr, p + 1, high, size);
+		p = partition(array, low, high, size);
+		quicksort(array, low, p - 1, size);
+		quicksort(array, p + 1, high, size);
 	}
 }
-
 /**
- * quick_sort - quick sorts an array of integers
- * the Quick sort algorithm
- * @array: input array
- * @size: length of array
+ * quick_sort - calls quicksort algorithm
+ * @array: array to sort
+ * @size: size of array
  */
 void quick_sort(int *array, size_t size)
 {
-	if (!array || size < 2)
-		return;
-
-	qs(array, 0, size - 1, size);
-}
-
-/**
- * swap - swaps two integers
- * @a: first integer
- * @b: second integer
- */
-void swap(int *a, int *b)
-{
-	int tmp = *a;
-	*a = *b;
-	*b = tmp;
+	quicksort(array, 0, size - 1, size);
+	print_array(array, size);
 }
