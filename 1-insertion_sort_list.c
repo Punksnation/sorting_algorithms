@@ -1,39 +1,58 @@
 #include "sort.h"
-#include <stdio.h>
 
 /**
- * insertion_sort_list - insertion sorts a doubly linked list
- * @list: the linked list to sort
+ * swap - swaps two nodes in a linked list
+ * @list: pointer to doubly linked list
+ * @a: pointer to first node
+ * @b: pointer to second node
+ */
+void swap(listint_t **list, listint_t *a, listint_t *b)
+{
+	listint_t *aprev = a->prev;
+	listint_t *bnext = b->next;
+
+	if (aprev)
+		aprev->next = b;
+	if (bnext)
+		bnext->prev = a;
+
+	a->prev = b;
+	b->prev = aprev;
+	a->next = bnext;
+	b->next = a;
+
+	if (b->prev == NULL)
+		*list = b;
+}
+/**
+ * insertion_sort_list - sorts a doubly linked list with
+ * insertion sort algorithm
+ * @list: pointer to doubly linked list
  */
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *current, *move, *tmp, *next;
+	listint_t *current;
+	listint_t *temp;
 
 	if (list == NULL || *list == NULL)
 		return;
-	for (current = *list; current; current = next)
+
+	current = *list;
+	current = current->next;
+
+	while (current)
 	{
-		next = current->next;
-		move = current;
-		while(move->prev)
+		temp = current;
+		while (temp)
 		{
-			printf("%d %d\n", move->prev->n, move->n);
-			if (move->n < move->prev->n)
+			if (temp->n > current->n)
 			{
-				puts("SWAP");
-				tmp = move->prev;
-				move->prev = tmp->prev;
-				if (tmp->prev)
-					tmp->prev->next = move;
-				else
-					*list = move;
-				tmp->prev = move;
-				tmp->next = move->next;
-				move->next = tmp;
-				print_list((const listint_t *)*list);
+				swap(list, temp, current);
+				print_list(*list);
 			}
-			else
-				break;
+			temp = temp->prev;
 		}
+		current = current->next;
 	}
+
 }
